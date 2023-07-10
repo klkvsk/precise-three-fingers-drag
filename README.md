@@ -14,3 +14,5 @@ This utility allows to drag anything with three fingers. Works only on Precision
 
 
 4. Right-click on <img src="./AppIcon.ico" style="height: 1em" /> icon in notification area for options.
+
+<img src="./doc/tray-options.png" />
