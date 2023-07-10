@@ -13,7 +13,7 @@
     <PlatformTarget>x64</PlatformTarget>
     <ApplicationIcon>AppIcon.ico</ApplicationIcon>
     <ApplicationManifest>app.manifest</ApplicationManifest>
-    <VersionPrefix>1.0.1</VersionPrefix>
+    <VersionPrefix>1.0.2</VersionPrefix>
     
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -27,6 +27,11 @@
 
   <ItemGroup>
     <AdditionalFiles Remove="app.manifest" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <Content Include="AppIcon.ico" />
   </ItemGroup>
 
 	<ItemGroup>

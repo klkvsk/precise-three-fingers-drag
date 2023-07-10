@@ -125,6 +125,7 @@ namespace PreciseThreeFingersDrag
                         _ => State.FOUR_OR_MORE,
                     });
                     MouseInject.LeftButtonPressed = false;
+                    dragCooldownTimer.Stop();
                 }
             }
 
