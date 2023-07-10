@@ -3,7 +3,7 @@
 This utility allows to drag anything with three fingers. Works only on Precision Touchpads (PTP). 
 
 ### How to install
-1. Go to [releases](https://github.com/klkvsk/precise-three-fingers-drag/releases/) to download the latest version
+1. Go to [**releases**](https://github.com/klkvsk/precise-three-fingers-drag/releases/) to download the latest version
 
   
 2. (!) Disable three finger gestures in Windows Settings, because it will interfere with dragging.
@@ -11,8 +11,8 @@ This utility allows to drag anything with three fingers. Works only on Precision
 
 
 3. Unpack and run PreciseThreeFingerDrag.exe
+<br><img src="./doc/run-exe.png" width="300" />
 
 
 4. Right-click on <img src="./AppIcon.ico" style="height: 1em" /> icon in notification area for options.
-
-<img src="./doc/tray-options.png" />
+<br><img src="./doc/tray-options.png" width="400" />
