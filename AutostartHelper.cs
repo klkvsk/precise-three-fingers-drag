@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using System.Diagnostics;
 
 namespace PreciseThreeFingersDrag
 {
@@ -8,11 +9,11 @@ namespace PreciseThreeFingersDrag
 
         private static RegistryKey? RegKey => Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
 
-        public static bool IsEnabled => (string)(RegKey?.GetValue(APP_KEY) ?? "") == System.Reflection.Assembly.GetExecutingAssembly().Location;
+        public static bool IsEnabled => (string)(RegKey?.GetValue(APP_KEY) ?? "") == Process.GetCurrentProcess().MainModule?.FileName;
 
         public static void Enable()
         {
-            RegKey?.SetValue(APP_KEY, System.Reflection.Assembly.GetExecutingAssembly().Location);
+            RegKey?.SetValue(APP_KEY, Process.GetCurrentProcess().MainModule?.FileName ?? "");
         }
 
         public static void Disable()

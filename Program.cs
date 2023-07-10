@@ -1,4 +1,5 @@
 using Linearstar.Windows.RawInput;
+using Linearstar.Windows.RawInput.Native;
 using System.Configuration;
 
 ///ref
@@ -25,9 +26,16 @@ namespace PreciseThreeFingersDrag
         [STAThread]
         private static void Main()
         {
-            _ = input.Create();
+            var createdNew = false;
+            var singleInstanceMutex = new Mutex(true, "precise-three-fingers-drag", out createdNew);
+            if (!createdNew)
+            {
+                return;
+            }
 
-            touch.Register(input.Handle);
+            var hwnd = input.Create();
+
+            touch.Register(hwnd);
             touch.StateChange += Touch_StateChange;
 
             ui = new TrayIcon();

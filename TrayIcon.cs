@@ -1,5 +1,5 @@
 ﻿using H.NotifyIcon.Core;
-using System.Reflection;
+using System.Diagnostics;
 
 namespace PreciseThreeFingersDrag
 {
@@ -20,7 +20,7 @@ namespace PreciseThreeFingersDrag
             Icon = Properties.Resources.AppIcon.Handle;
             UpdateName(ToolTip = "Precise Three Finger Drag");
 
-            Version? version = Assembly.GetExecutingAssembly().GetName().Version;
+            var version = Process.GetCurrentProcess().MainModule?.FileVersionInfo.ProductVersion;
 
             ContextMenu = new PopupMenu
             {
