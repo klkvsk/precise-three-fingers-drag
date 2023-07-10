@@ -28,8 +28,6 @@ namespace PreciseThreeFingersDrag
             FOUR_OR_MORE,
         };
 
-        public bool threeFingerClickIsFree = false;
-
         private State state = State.CLEAR;
 
         private double accumulatedDistance;
@@ -50,14 +48,6 @@ namespace PreciseThreeFingersDrag
         private RawInputDigitizerContact[] previousContacts;
         private Point? previousCenterPoint;
 
-        private readonly BlockingCollection<RawInputDigitizerData> updatesQueue;
-
-        public double DragCooldownMilliseconds
-        {
-            get => dragCooldownTimer.Interval;
-            set => dragCooldownTimer.Interval = value;
-        }
-
         public TouchProcessor()
         {
             dragCooldownTimer = new System.Timers.Timer((double)CooldownDelay.Short)
@@ -65,9 +55,6 @@ namespace PreciseThreeFingersDrag
                 AutoReset = false
             };
             dragCooldownTimer.Elapsed += DragCooldownTimer_Elapsed;
-            updatesQueue = new BlockingCollection<RawInputDigitizerData>(
-                new ConcurrentQueue<RawInputDigitizerData>()
-            );
             previousContacts = new RawInputDigitizerContact[] { };
         }
 

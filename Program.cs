@@ -7,27 +7,25 @@ namespace PreciseThreeFingersDrag
 {
     internal static class Program
     {
-        private static TrayIcon ui;
-        private static readonly InputMessageLoop input;
-        private static readonly TouchProcessor touch;
+        private static TrayIcon? ui;
+        private static InputMessageLoop? input;
+        private static TouchProcessor? touch;
 
         public static Configuration GetConfig()
         {
             return ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
         }
 
-        static Program()
-        {
-            ui = new TrayIcon();
-            input = new InputMessageLoop(OnInputEvent);
-            touch = new TouchProcessor();
-        }
 
         [STAThread]
         private static void Main()
         {
+            ui = new TrayIcon();
+            input = new InputMessageLoop(OnInputEvent);
+            touch = new TouchProcessor();
+
             var createdNew = false;
-            var singleInstanceMutex = new Mutex(true, "precise-three-fingers-drag", out createdNew);
+            new Mutex(true, "precise-three-fingers-drag", out createdNew);
             if (!createdNew)
             {
                 return;
@@ -37,8 +35,6 @@ namespace PreciseThreeFingersDrag
 
             touch.Register(hwnd);
             touch.StateChange += Touch_StateChange;
-
-            ui = new TrayIcon();
             ui.Created += Ui_Created;
             ui.QuitMenuItem.Click += Quit;
             ui.UseStandardTooltip = true;
@@ -86,7 +82,10 @@ namespace PreciseThreeFingersDrag
 
         private static void Ui_DelayChanged(TouchProcessor.CooldownDelay delay)
         {
-            touch.DragCooldownDelay = delay;
+            if (touch != null)
+            {
+                touch.DragCooldownDelay = delay;
+            }
 
             Configuration config = GetConfig();
             KeyValueConfigurationElement? delayCfg = config.AppSettings.Settings["delay"];
@@ -104,6 +103,11 @@ namespace PreciseThreeFingersDrag
 
         private static void Ui_AutostartToggle(object? sender, EventArgs e)
         {
+            if (ui == null)
+            {
+                return;
+            }
+
             if (AutostartHelper.IsEnabled)
             {
                 AutostartHelper.Disable();
