@@ -1,6 +1,7 @@
 using Linearstar.Windows.RawInput;
 using System.Configuration;
 
+///ref
 namespace PreciseThreeFingersDrag
 {
     internal static class Program

@@ -2,12 +2,14 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
+	<PublishSingleFile>true</PublishSingleFile>
+	<SelfContained>true</SelfContained>
     <TargetFramework>net7.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
-    <UseWindowsForms>True</UseWindowsForms>
+    <UseWindowsForms>False</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <StartupObject></StartupObject>
+    <StartupObject>PreciseThreeFingersDrag.Program</StartupObject>
     <PlatformTarget>x64</PlatformTarget>
     <ApplicationIcon>AppIcon.ico</ApplicationIcon>
     <ApplicationManifest>app.manifest</ApplicationManifest>
@@ -17,7 +19,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DebugType>portable</DebugType>
+    <DebugType>none</DebugType>
   </PropertyGroup>
 
 
@@ -28,6 +30,8 @@
 	<ItemGroup>
 		<PackageReference Include="H.NotifyIcon" Version="2.0.108" />
 		<PackageReference Include="RawInput.Sharp" Version="0.1.1" PrivateAssets="all" />
+		<PackageReference Include="System.Configuration.ConfigurationManager" Version="7.0.0" />
+		<PackageReference Include="System.Drawing.Primitives" Version="4.3.0" />
 		<PackageReference Include="System.Resources.Extensions" Version="7.0.0" />
 		<PackageReference Include="Vanara.PInvoke.User32" Version="3.4.15" />
 	</ItemGroup>
@@ -41,7 +45,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <EmbeddedResource Update="Properties\Resources.resx">
+	  <EmbeddedResource Update="Properties\Resources.resx">	
 	    <Generator>ResXFileCodeGenerator</Generator>
 	    <LastGenOutput>Resources.Designer.cs</LastGenOutput>
 	  </EmbeddedResource>

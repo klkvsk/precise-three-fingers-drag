@@ -1,5 +1,6 @@
 ﻿using Linearstar.Windows.RawInput;
 using System.Collections.Concurrent;
+using System.Drawing;
 using System.Timers;
 
 namespace PreciseThreeFingersDrag
