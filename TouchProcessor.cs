@@ -1,5 +1,6 @@
 ﻿using Linearstar.Windows.RawInput;
 using System.Collections.Concurrent;
+using System.Diagnostics;
 using System.Drawing;
 using System.Timers;
 
@@ -47,6 +48,8 @@ namespace PreciseThreeFingersDrag
 
         private RawInputDigitizerContact[] previousContacts;
         private Point? previousCenterPoint;
+        int newContactsCount = 0;
+        int previousContactCount = 0;
 
         public TouchProcessor()
         {
@@ -56,6 +59,7 @@ namespace PreciseThreeFingersDrag
             };
             dragCooldownTimer.Elapsed += DragCooldownTimer_Elapsed;
             previousContacts = new RawInputDigitizerContact[] { };
+            previousContactCount = 0;
         }
 
         public void Register(IntPtr hwnd)
@@ -82,14 +86,26 @@ namespace PreciseThreeFingersDrag
 
         public void Update(RawInputDigitizerData data)
         {
+            if (data.ContactsCount == 0)
+            {
+                // Junk data. If last finger leaves touchpad, the contact is still present with "IsButtonDown" switch off
+                return;
+            }
+
             RawInputDigitizerContact[] newContacts = data.Contacts
                 .Where(c => c.IsButtonDown.GetValueOrDefault(false) && c.Kind == RawInputDigitizerContactKind.Finger)
                 .ToArray();
 
+            newContactsCount = data.ContactsCount;
+            if (newContacts.Length == 0)
+            {
+                newContactsCount = 0;
+            }
+
             // From nothing
             if (state == State.CLEAR)
             {
-                SetState(newContacts.Length switch
+                SetState(newContactsCount switch
                 {
                     0 => State.CLEAR,
                     1 => State.ONE_FINGER_IDLE,
@@ -100,8 +116,11 @@ namespace PreciseThreeFingersDrag
                 accumulatedDistance = 0;
                 previousContacts = newContacts;
                 previousCenterPoint = null;
+                previousContactCount = newContactsCount;
+
                 return;
             }
+
 
             // While cooldown - reset on any movement no matter how many fingers registered
             if (state == State.THREE_FINGER_DRAG_COOLDOWN)
@@ -116,7 +135,7 @@ namespace PreciseThreeFingersDrag
 
                 if (accumulatedDistance > 15)
                 {
-                    SetState(newContacts.Length switch
+                    SetState(newContactsCount switch
                     {
                         0 => State.CLEAR,
                         1 => State.ONE_FINGER_IDLE,
@@ -130,7 +149,7 @@ namespace PreciseThreeFingersDrag
             }
 
             // Same fingers
-            if (previousContacts.Length == newContacts.Length)
+            if (newContactsCount > 0 && previousContactCount == newContactsCount)
             {
                 Point center = CalculateCenterPoint(newContacts);
                 Point diff = new();
@@ -141,6 +160,7 @@ namespace PreciseThreeFingersDrag
                 }
                 previousCenterPoint = center;
                 previousContacts = newContacts;
+                previousContactCount = newContactsCount;
 
                 if (accumulatedDistance > 15)
                 {
@@ -168,11 +188,11 @@ namespace PreciseThreeFingersDrag
             }
 
             // Added fingers
-            if (previousContacts.Length < newContacts.Length)
+            if (previousContactCount < newContactsCount)
             {
                 if (state == State.THREE_FINGER_DRAG_COOLDOWN)
                 {
-                    if (newContacts.Length == 3)
+                    if (newContactsCount == 3)
                     {
                         SetState(State.THREE_FINGER_DRAG);
                         dragCooldownTimer.Stop();
@@ -182,7 +202,7 @@ namespace PreciseThreeFingersDrag
                         // keep this state
                     }
                 }
-                else if (state == State.THREE_FINGER_DRAG && newContacts.Length == 3)
+                else if (state == State.THREE_FINGER_DRAG && newContactsCount == 3)
                 {
                     // keep this state
                 }
@@ -192,7 +212,7 @@ namespace PreciseThreeFingersDrag
                 }
                 else
                 {
-                    SetState(newContacts.Length switch
+                    SetState(newContactsCount switch
                     {
                         0 => State.CLEAR,
                         1 => State.ONE_FINGER_IDLE,
@@ -205,15 +225,17 @@ namespace PreciseThreeFingersDrag
 
                 previousContacts = newContacts;
                 previousCenterPoint = null;
+                previousContactCount = newContactsCount;
+
                 return;
             }
 
             // Removed fingers
-            if (previousContacts.Length > newContacts.Length)
+            if (previousContactCount > newContactsCount)
             {
                 if (state == State.THREE_FINGER_DRAG)
                 {
-                    if (newContacts.Length == 2)
+                    if (newContactsCount == 2)
                     {
                         // keep dragging
                     }
@@ -229,17 +251,17 @@ namespace PreciseThreeFingersDrag
 
                     // keep this state
                 }
-                else if (state == State.FOUR_OR_MORE && newContacts.Length == 3)
+                else if (state == State.FOUR_OR_MORE && newContactsCount == 3)
                 {
                     SetState(State.THREE_FINGER_DRAG);
                 }
-                else if (state == State.TWO_FINGER_MOVING && newContacts.Length >= 2)
+                else if (state == State.TWO_FINGER_MOVING && newContactsCount >= 2)
                 {
                     // keep this state
                 }
                 else
                 {
-                    SetState(newContacts.Length switch
+                    SetState(newContactsCount switch
                     {
                         0 => State.CLEAR,
                         1 => State.ONE_FINGER_IDLE,
@@ -252,6 +274,7 @@ namespace PreciseThreeFingersDrag
 
                 previousContacts = newContacts;
                 previousCenterPoint = null;
+                previousContactCount = newContactsCount;
 
                 return;
             }
