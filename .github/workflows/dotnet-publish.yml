@@ -29,12 +29,11 @@ jobs:
     - name: Restore
       run: dotnet restore --locked-mode
 
-
     - name: Build
-      run: dotnet publish -c Release
+      run: dotnet publish -c Release -o publish
 
     - name: Debug
-      run: tree
+      run: tree /A
       
     - name: Upload artifact
       uses: actions/upload-artifact@v3
