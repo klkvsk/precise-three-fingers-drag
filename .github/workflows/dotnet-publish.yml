@@ -29,6 +29,9 @@ jobs:
     - name: Restore
       run: dotnet restore --locked-mode
 
+    - name: Debug
+      run: tree
+
     - name: Build
       run: dotnet publish -c Release
       
@@ -36,5 +39,5 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: Exe
-        path: publish/ThreeFingersDrag.exe
+        path: publish\ThreeFingersDrag.exe
 
