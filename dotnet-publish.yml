@@ -2,10 +2,7 @@ name: Build release
 
 on:
   push:
-    branches: [ "*" ]
-
-env:
-    NUGET_PACKAGES: ${{ github.workspace }}/.nuget/packages
+    tags: [ "*" ]
 
 jobs:
   build:
@@ -20,21 +17,19 @@ jobs:
     - name: Install .NET Core
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 7
-        cache: true
+        dotnet-version: 6.0.x
 
     - name: Setup MSBuild.exe
       uses: microsoft/setup-msbuild@v1.0.2
 
-    - name: Restore
-      run: dotnet restore --locked-mode
-
     - name: Build
       run: dotnet publish -c Release
       
-    - name: Upload artifact
-      uses: actions/upload-artifact@v3
+    - name: Upload binaries to release
+      uses: svenstaro/upload-release-action@v2
       with:
-        name: Exe
-        path: publish/ThreeFingersDrag.exe
-
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: \bin\Release\net7.0-windows\win-x64\publish\PreciseThreeFingersDrag.exe
+        asset_name: PreciseThreeFingersDrag.exe
+        tag: ${{ github.ref }}
+        overwrite: true
