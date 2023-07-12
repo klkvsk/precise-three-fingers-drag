@@ -24,7 +24,7 @@ jobs:
         cache: true
 
     - name: Setup MSBuild.exe
-      uses: microsoft/setup-msbuild@v1.0.2
+      uses: microsoft/setup-msbuild@v1.1
 
     - name: Restore
       run: dotnet restore --locked-mode

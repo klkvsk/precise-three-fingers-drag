@@ -45,6 +45,11 @@ namespace PreciseThreeFingersDrag
 
         private static void Ui_Created(object? sender, EventArgs e)
         {
+            if (ui == null)
+            {
+                throw new NullReferenceException();
+            }
+
             ui.AutoStartMenuItem.Checked = AutostartHelper.IsEnabled;
             ui.AutoStartMenuItem.Click += Ui_AutostartToggle;
 
