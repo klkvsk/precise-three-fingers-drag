@@ -33,7 +33,7 @@ jobs:
       run: dotnet publish /p:PublishProfile=FolderProfile
 
     - name: Debug
-      run: tree /A
+      run: dir /S
       
     - name: Upload artifact
       uses: actions/upload-artifact@v3
