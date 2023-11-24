@@ -46,6 +46,7 @@ namespace PreciseThreeFingersDrag
             set => dragCooldownTimer.Interval = (double)value;
         }
 
+        private RawInputDigitizerContact[]? bufferedContacts = null;
         private RawInputDigitizerContact[] previousContacts;
         private Point? previousCenterPoint;
         int newContactsCount = 0;
@@ -95,6 +96,18 @@ namespace PreciseThreeFingersDrag
             RawInputDigitizerContact[] newContacts = data.Contacts
                 .Where(c => c.IsButtonDown.GetValueOrDefault(false) && c.Kind == RawInputDigitizerContactKind.Finger)
                 .ToArray();
+
+            if (bufferedContacts != null)
+            {
+                newContacts = bufferedContacts.Concat(newContacts).ToArray();
+                bufferedContacts = null;
+            }
+
+            if (newContacts.Length < data.ContactsCount)
+            {
+                bufferedContacts = newContacts;
+                return;
+            }
 
             newContactsCount = data.ContactsCount;
             if (newContacts.Length == 0)
